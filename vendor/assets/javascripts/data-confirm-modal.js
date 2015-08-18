@@ -234,7 +234,7 @@
 
         isMatch = function (input) { return input.match(re) };
       } else {
-        isMatch = function (input) { return options.verify == input };
+        isMatch = function (input) { return options.verify == input.replace(/[^\w\s]/i) };
       }
 
       var verification = $('<input/>', {"type": 'text', "class": settings.verifyClass}).on('keyup', function () {
