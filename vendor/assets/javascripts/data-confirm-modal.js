@@ -100,7 +100,8 @@
       verify:       element.data('verify'),
       verifyRegexp: element.data('verify-regexp'),
       verifyLabel:  element.data('verify-text'),
-      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive')
+      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive'),
+      stripAlpha: element.data('strip-alpha')
     };
 
     var modal = buildModal (options);
@@ -176,8 +177,10 @@
         var re = new RegExp(options.verifyRegexp, caseInsensitive ? 'i' : '');
 
         isMatch = function (input) { return input.match(re) };
-      } else {
+      } else if(options.stripAlpha) {
         isMatch = function (input) { return options.verify == input.replace(/[^\w\s]/i) };
+      } else {
+        isMatch = function (input) { return options.verify == input };
       }
 
       var verification = $('<input/>', {"type": 'text', "class": settings.verifyClass}).on('keyup', function () {
