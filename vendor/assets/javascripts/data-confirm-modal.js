@@ -233,8 +233,10 @@
         var re = new RegExp(options.verifyRegexp, caseInsensitive ? 'i' : '');
 
         isMatch = function (input) { return input.match(re) };
-      } else {
+      } else if(options.stripAlpha) {
         isMatch = function (input) { return options.verify == input.replace(/[^\w\s]/i) };
+      } else {
+        isMatch = function (input) { return options.verify == input };
       }
 
       var verification = $('<input/>', {"type": 'text', "class": settings.verifyClass}).on('keyup', function () {
