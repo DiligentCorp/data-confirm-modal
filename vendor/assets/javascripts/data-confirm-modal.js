@@ -234,7 +234,7 @@
 
         isMatch = function (input) { return input.match(re) };
       } else if(options.stripAlpha) {
-        isMatch = function (input) { return options.verify == input.replace(/[^\w\s]/i) };
+        isMatch = function (input) { return options.verify == input.replace(/[^\w\s]/i, '') };
       } else {
         isMatch = function (input) { return options.verify == input };
       }
