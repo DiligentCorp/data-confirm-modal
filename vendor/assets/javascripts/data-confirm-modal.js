@@ -249,6 +249,10 @@
 
       modal.on('hidden.bs.modal', function () {
         verification.val('').trigger('keyup');
+        modals = $(".modal.in")
+        if(modals.length > 0 && !$("body").hasClass("modal-open")) {
+          $('body').addClass('modal-open');
+        }
       });
 
       if (options.verifyLabel)
