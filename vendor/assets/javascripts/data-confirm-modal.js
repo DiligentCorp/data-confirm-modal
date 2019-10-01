@@ -277,9 +277,7 @@
 
     modal.on('hidden.bs.modal', function () {
       //Keep class if we are in a modal somewhere
-      console.log("HELLO");
       modals = $(".modal.in");
-      console.log(modals);
       if(modals.length > 0 && !$("body").hasClass("modal-open")) {
         $('body').addClass('modal-open');
       }
