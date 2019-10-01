@@ -250,6 +250,7 @@
       modal.on('hidden.bs.modal', function () {
         verification.val('').trigger('keyup');
         modals = $(".modal.in");
+        console.log(modals);
         if(modals.length > 0 && !$("body").hasClass("modal-open")) {
           $('body').addClass('modal-open');
         }
