@@ -249,7 +249,7 @@
 
       modal.on('hidden.bs.modal', function () {
         verification.val('').trigger('keyup');
-        modals = $(".modal.in")
+        modals = $(".modal.in");
         if(modals.length > 0 && !$("body").hasClass("modal-open")) {
           $('body').addClass('modal-open');
         }
@@ -346,6 +346,10 @@
         modal.one('hidden.bs.modal', function() {
           // Reset it after modal is closed.
           window.confirm = window_confirm;
+          modals = $(".modal.in");
+          if(modals.length > 0 && !$("body").hasClass("modal-open")) {
+            $('body').addClass('modal-open');
+          }
         });
 
         // Proceed with Rails' handlers
