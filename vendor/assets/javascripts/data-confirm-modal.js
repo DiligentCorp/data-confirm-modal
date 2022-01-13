@@ -118,8 +118,8 @@
     }
 
     var bootstrapVersion = parseInt(match[1]);
-    if (bootstrapVersion != 3 && bootstrapVersion != 4) {
-      throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3 and 4.");
+    if (bootstrapVersion != 3 && bootstrapVersion != 4 && bootstrapVersion != 5) {
+      throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3, 4, and 5.");
     }
   });
   var buildElementModal = function (element) {
