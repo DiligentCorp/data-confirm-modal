@@ -110,7 +110,7 @@
     if ($.fn.modal.Constructor.VERSION == undefined) {
       throw new Error("The bootstrap modal plugin does not have its version defined ?!?");
     }
-  });
+  
     var versionString = $.fn.modal.Constructor.VERSION;
     var match = versionString.match(/^(\d)\./);
     if (!match) {
@@ -121,7 +121,7 @@
     if (bootstrapVersion != 3 && bootstrapVersion != 4) {
       throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3 and 4.");
     }
-
+  });
   var buildElementModal = function (element) {
     var options = {
       title:             element.data('title') || element.attr('title') || element.data('original-title'),
