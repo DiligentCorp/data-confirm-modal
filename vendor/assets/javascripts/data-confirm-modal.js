@@ -121,240 +121,239 @@
     if (bootstrapVersion != 3 && bootstrapVersion != 4 && bootstrapVersion != 5) {
       throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3, 4, and 5.");
     }
-  });
-  var buildElementModal = function (element) {
-    var options = {
-      title:             element.data('title') || element.attr('title') || element.data('original-title'),
-      text:              element.data('confirm'),
-      focus:             element.data('focus'),
-      method:            element.data('method'),
-      modalClass:        element.data('modal-class'),
-      dialogClass:       element.data('dialog-class'),
-      modalCloseContent: element.data('modal-close-content'),
-      commit:            element.data('commit'),
-      commitClass:       element.data('commit-class'),
-      cancel:            element.data('cancel'),
-      cancelClass:       element.data('cancel-class'),
-      remote:            element.data('remote'),
-      verify:            element.data('verify'),
-      verifyRegexp:      element.data('verify-regexp'),
-      verifyLabel:       element.data('verify-text'),
-      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive'),
-      backdrop:          element.data('backdrop'),
-      keyboard:          element.data('keyboard'),
-      show:              element.data('show')
-    };
+    var buildElementModal = function (element) {
+      var options = {
+        title:             element.data('title') || element.attr('title') || element.data('original-title'),
+        text:              element.data('confirm'),
+        focus:             element.data('focus'),
+        method:            element.data('method'),
+        modalClass:        element.data('modal-class'),
+        dialogClass:       element.data('dialog-class'),
+        modalCloseContent: element.data('modal-close-content'),
+        commit:            element.data('commit'),
+        commitClass:       element.data('commit-class'),
+        cancel:            element.data('cancel'),
+        cancelClass:       element.data('cancel-class'),
+        remote:            element.data('remote'),
+        verify:            element.data('verify'),
+        verifyRegexp:      element.data('verify-regexp'),
+        verifyLabel:       element.data('verify-text'),
+        verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive'),
+        backdrop:          element.data('backdrop'),
+        keyboard:          element.data('keyboard'),
+        show:              element.data('show')
+      };
 
-    var modal = buildModal(options);
+      var modal = buildModal(options);
 
-    modal.find('.commit').on('click', function () {
-      // Call the original event handler chain
-      element.get(0).click();
+      modal.find('.commit').on('click', function () {
+        // Call the original event handler chain
+        element.get(0).click();
 
-      modal.modal('hide');
-    });
+        modal.modal('hide');
+      });
 
-    return modal;
-  }
-
-  var buildModal = function (options) {
-    var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
-    var fade = settings.fade ? 'fade' : '';
-    var modalClass = options.modalClass ? options.modalClass : settings.modalClass;
-    var dialogClass = options.dialogClass ? options.dialogClass : settings.dialogClass;
-    var modalCloseContent = options.modalCloseContent ? options.modalCloseContent : settings.modalCloseContent;
-    var modalClose = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">'+modalCloseContent+'</button>'
-
-    var modalTitle = '<h5 id="'+id+'Label" class="modal-title"></h5> '
-    var modalHeader;
-
-    // Bootstrap 3 and 4 have different DOMs and different CSS. In B4, the
-    // modalHeader is display:flex and the modalClose uses negative margins,
-    // so it can stay after the modalTitle.
-    //
-    // In B3, the close button floats to the right, so it must stay before
-    // the modalTitle.
-    //
-    switch (bootstrapVersion) {
-    case 3:
-      modalHeader = modalClose + modalTitle;
-      break;
-    case 4:
-      modalHeader = modalTitle + modalClose;
-      break;
+      return modal;
     }
 
-    var modal = $(
-      '<div id="'+id+'" class="modal '+modalClass+' '+fade+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
-        '<div class="modal-dialog '+dialogClass+'" role="document">' +
-          '<div class="modal-content">' +
-            '<div class="modal-header">' +
-              modalHeader +
-            '</div>' +
-            '<div class="modal-body"></div>' +
-            '<div class="modal-footer">' +
-              '<button class="btn cancel" data-dismiss="modal" aria-hidden="true"></button>' +
-              '<button class="btn commit"></button>' +
+    var buildModal = function (options) {
+      var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
+      var fade = settings.fade ? 'fade' : '';
+      var modalClass = options.modalClass ? options.modalClass : settings.modalClass;
+      var dialogClass = options.dialogClass ? options.dialogClass : settings.dialogClass;
+      var modalCloseContent = options.modalCloseContent ? options.modalCloseContent : settings.modalCloseContent;
+      var modalClose = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">'+modalCloseContent+'</button>'
+
+      var modalTitle = '<h5 id="'+id+'Label" class="modal-title"></h5> '
+      var modalHeader;
+
+      // Bootstrap 3 and 4 have different DOMs and different CSS. In B4, the
+      // modalHeader is display:flex and the modalClose uses negative margins,
+      // so it can stay after the modalTitle.
+      //
+      // In B3, the close button floats to the right, so it must stay before
+      // the modalTitle.
+      //
+      switch (bootstrapVersion) {
+      case 3:
+        modalHeader = modalClose + modalTitle;
+        break;
+      case 4:
+        modalHeader = modalTitle + modalClose;
+        break;
+      }
+
+      var modal = $(
+        '<div id="'+id+'" class="modal '+modalClass+' '+fade+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
+          '<div class="modal-dialog '+dialogClass+'" role="document">' +
+            '<div class="modal-content">' +
+              '<div class="modal-header">' +
+                modalHeader +
+              '</div>' +
+              '<div class="modal-body"></div>' +
+              '<div class="modal-footer">' +
+                '<button class="btn cancel" data-dismiss="modal" aria-hidden="true"></button>' +
+                '<button class="btn commit"></button>' +
+              '</div>'+
             '</div>'+
           '</div>'+
-        '</div>'+
-      '</div>'
-    );
+        '</div>'
+      );
 
-    // Make sure it's always the top zindex
-    var highest, current;
-    highest = current = settings.zIndex;
-    $('.modal.in').not('#'+id).each(function() {
-      current = parseInt($(this).css('z-index'), 10);
-      if(current > highest) {
-        highest = current
-      }
-    });
-    modal.css('z-index', parseInt(highest) + 1);
+      // Make sure it's always the top zindex
+      var highest, current;
+      highest = current = settings.zIndex;
+      $('.modal.in').not('#'+id).each(function() {
+        current = parseInt($(this).css('z-index'), 10);
+        if(current > highest) {
+          highest = current
+        }
+      });
+      modal.css('z-index', parseInt(highest) + 1);
 
-    modal.find('.modal-title').text(options.title || settings.title);
+      modal.find('.modal-title').text(options.title || settings.title);
 
-    var body = modal.find('.modal-body');
+      var body = modal.find('.modal-body');
 
-    $.each((options.text||'').split(/\n{2}/), function (i, piece) {
-      body.append($('<p/>').html(piece));
-    });
+      $.each((options.text||'').split(/\n{2}/), function (i, piece) {
+        body.append($('<p/>').html(piece));
+      });
 
-    var commit = modal.find('.commit');
-    commit.text(options.commit || settings.commit);
-    commit.addClass(options.commitClass || settings.commitClass);
+      var commit = modal.find('.commit');
+      commit.text(options.commit || settings.commit);
+      commit.addClass(options.commitClass || settings.commitClass);
 
-    var cancel = modal.find('.cancel');
-    cancel.text(options.cancel || settings.cancel);
-    cancel.addClass(options.cancelClass || settings.cancelClass);
+      var cancel = modal.find('.cancel');
+      cancel.text(options.cancel || settings.cancel);
+      cancel.addClass(options.cancelClass || settings.cancelClass);
 
-    if (options.remote) {
-      commit.attr('data-bs-dismiss', 'modal');
-    }
-
-    if (options.verify || options.verifyRegexp) {
-      commit.prop('disabled', true);
-
-      var isMatch;
-      if (options.verifyRegexp) {
-        var caseInsensitive = options.verifyRegexpCaseInsensitive;
-        var regexp = options.verifyRegexp;
-        var re = new RegExp(regexp, caseInsensitive ? 'i' : '');
-
-        isMatch = function (input) { return input.match(re) };
-      } else {
-        isMatch = function (input) { return options.verify == input };
+      if (options.remote) {
+        commit.attr('data-bs-dismiss', 'modal');
       }
 
-      var verification = $('<input/>', {"type": 'text', "class": settings.verifyClass}).on('keyup', function () {
-        commit.prop('disabled', !isMatch($(this).val()));
-      });
+      if (options.verify || options.verifyRegexp) {
+        commit.prop('disabled', true);
 
-      modal.on('shown.bs.modal', function () {
-        verification.trigger('focus');
-      });
+        var isMatch;
+        if (options.verifyRegexp) {
+          var caseInsensitive = options.verifyRegexpCaseInsensitive;
+          var regexp = options.verifyRegexp;
+          var re = new RegExp(regexp, caseInsensitive ? 'i' : '');
 
-      modal.on('hidden.bs.modal', function () {
-        verification.val('').trigger('keyup');
-      });
-
-      if (options.verifyLabel)
-        body.append($('<p>', {text: options.verifyLabel}))
-
-      body.append(verification);
-    }
-
-    var focus_element;
-    if (options.focus) {
-      focus_element = options.focus;
-    } else if (options.method == 'delete') {
-      focus_element = 'cancel'
-    } else {
-      focus_element = settings.focus;
-    }
-    focus_element = modal.find('.' + focus_element);
-
-    modal.on('shown.bs.modal', function () {
-      focus_element.trigger('focus');
-    });
-
-    $('body').append(modal);
-
-    modal.spawn = function() {
-      return modal.modal($.extend({}, {
-        backdrop: options.backdrop,
-        keyboard: options.keyboard,
-        show:     options.show
-      }));
-    };
-
-    return modal;
-  };
-
-
-  /**
-   * Returns a modal already built for the given element or builds a new one,
-   * caching it into the element's `confirm-modal` data attribute.
-   */
-  $.fn.getConfirmModal = function () {
-    var element = $(this), modal = element.data('confirm-modal');
-
-    if (!modal) {
-      modal = buildElementModal(element);
-      element.data('confirm-modal', modal);
-    }
-
-    return modal;
-  };
-
-  $.fn.confirmModal = function () {
-    var modal = $(this).getConfirmModal();
-
-    modal.spawn();
-
-    return modal;
-  };
-
-  if (window.Rails || $.rails) {
-    /**
-     * Attaches to Rails' UJS adapter's 'confirm' event, triggered on elements
-     * having a `data-confirm` attribute set.
-     *
-     * If the modal is not visible, then it is spawned and the default Rails
-     * confirmation dialog is canceled.
-     *
-     * If the modal is visible, it means the handler is being called by the
-     * modal commit button click handler, as such the user has successfully
-     * clicked on the confirm button. In this case Rails' confirm function
-     * is briefly overriden, and afterwards reset when the modal is closed.
-     *
-     */
-    var window_confirm = window.confirm;
-
-    $(document).on('confirm', settings.elements.join(', '), function() {
-      var modal = $(this).getConfirmModal();
-
-      if (!modal.is(':visible')) {
-        modal.spawn();
-
-        // Cancel Rails' confirmation
-        return false;
-
-      } else {
-        // Modal has been confirmed. Override Rails' handler
-        window.confirm = function () {
-          return true;
+          isMatch = function (input) { return input.match(re) };
+        } else {
+          isMatch = function (input) { return options.verify == input };
         }
 
-        modal.one('hidden.bs.modal', function() {
-          // Reset it after modal is closed.
-          window.confirm = window_confirm;
+        var verification = $('<input/>', {"type": 'text', "class": settings.verifyClass}).on('keyup', function () {
+          commit.prop('disabled', !isMatch($(this).val()));
         });
 
-        // Proceed with Rails' handlers
-        return true;
-      }
-    });
-  }
+        modal.on('shown.bs.modal', function () {
+          verification.trigger('focus');
+        });
 
+        modal.on('hidden.bs.modal', function () {
+          verification.val('').trigger('keyup');
+        });
+
+        if (options.verifyLabel)
+          body.append($('<p>', {text: options.verifyLabel}))
+
+        body.append(verification);
+      }
+
+      var focus_element;
+      if (options.focus) {
+        focus_element = options.focus;
+      } else if (options.method == 'delete') {
+        focus_element = 'cancel'
+      } else {
+        focus_element = settings.focus;
+      }
+      focus_element = modal.find('.' + focus_element);
+
+      modal.on('shown.bs.modal', function () {
+        focus_element.trigger('focus');
+      });
+
+      $('body').append(modal);
+
+      modal.spawn = function() {
+        return modal.modal($.extend({}, {
+          backdrop: options.backdrop,
+          keyboard: options.keyboard,
+          show:     options.show
+        }));
+      };
+
+      return modal;
+    };
+
+
+    /**
+     * Returns a modal already built for the given element or builds a new one,
+     * caching it into the element's `confirm-modal` data attribute.
+     */
+    $.fn.getConfirmModal = function () {
+      var element = $(this), modal = element.data('confirm-modal');
+
+      if (!modal) {
+        modal = buildElementModal(element);
+        element.data('confirm-modal', modal);
+      }
+
+      return modal;
+    };
+
+    $.fn.confirmModal = function () {
+      var modal = $(this).getConfirmModal();
+
+      modal.spawn();
+
+      return modal;
+    };
+
+    if (window.Rails || $.rails) {
+      /**
+       * Attaches to Rails' UJS adapter's 'confirm' event, triggered on elements
+       * having a `data-confirm` attribute set.
+       *
+       * If the modal is not visible, then it is spawned and the default Rails
+       * confirmation dialog is canceled.
+       *
+       * If the modal is visible, it means the handler is being called by the
+       * modal commit button click handler, as such the user has successfully
+       * clicked on the confirm button. In this case Rails' confirm function
+       * is briefly overriden, and afterwards reset when the modal is closed.
+       *
+       */
+      var window_confirm = window.confirm;
+
+      $(document).on('confirm', settings.elements.join(', '), function() {
+        var modal = $(this).getConfirmModal();
+
+        if (!modal.is(':visible')) {
+          modal.spawn();
+
+          // Cancel Rails' confirmation
+          return false;
+
+        } else {
+          // Modal has been confirmed. Override Rails' handler
+          window.confirm = function () {
+            return true;
+          }
+
+          modal.one('hidden.bs.modal', function() {
+            // Reset it after modal is closed.
+            window.confirm = window_confirm;
+          });
+
+          // Proceed with Rails' handlers
+          return true;
+        }
+      });
+    }
+  });
 })(jQuery);
