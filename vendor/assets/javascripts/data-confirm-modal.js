@@ -4,7 +4,7 @@
  *
  *   - vjt@openssl.it  Tue Jul  2 18:45:15 CEST 2013
  */
-(function ($) {
+jQuery(function() {
 
   /**
    * Builds the markup for a [Bootstrap modal](http://twitter.github.io/bootstrap/javascript.html#modals)
@@ -47,7 +47,7 @@
     focus: 'commit',
     zIndex: 1050,
     modalClass: false,
-    modalCloseContent: '&times;',
+    modalCloseContent: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24"><defs><path id="a" d="M17.033 22.17a.75.75 0 1 1-1.5 0v-4.677h-4.676a.75.75 0 0 1 0-1.5h4.677v-4.677a.75.75 0 0 1 1.5 0v4.677h4.676a.75.75 0 0 1 0 1.5h-4.677v4.677zm-.94 5.845c6.194 0 11.215-5.021 11.215-11.215S22.287 5.585 16.093 5.585 4.878 10.606 4.878 16.8s5.021 11.215 11.215 11.215zm0-1.5c-5.365 0-9.715-4.35-9.715-9.715 0-5.366 4.35-9.715 9.715-9.715 5.366 0 9.715 4.35 9.715 9.715s-4.35 9.715-9.715 9.715z"/></defs><use fill="#1E1E1E" fill-rule="evenodd" transform="rotate(-45 8.057 19.128)" xlink:href="#a"/></svg>',
     show: true
   };
 
@@ -76,14 +76,14 @@
         if (options.onConfirm && options.onConfirm.call)
           options.onConfirm.call();
 
-        modal.modal('hide');
+        modal.hide();
       });
 
       modal.find('.cancel').on('click', function () {
         if (options.onCancel && options.onCancel.call)
           options.onCancel.call();
 
-        modal.modal('hide');
+        modal.hide();
       });
     }
   };
@@ -111,9 +111,9 @@
   }
 
   var bootstrapVersion = parseInt(match[1]);
-  if (bootstrapVersion != 3 && bootstrapVersion != 4) {
-    throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3 and 4.");
-  }
+  // if (bootstrapVersion != 3 && bootstrapVersion != 4) {
+  //   throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3 and 4.");
+  // }
 
   var buildElementModal = function (element) {
     var options = {
@@ -143,7 +143,7 @@
       // Call the original event handler chain
       element.get(0).click();
 
-      modal.modal('hide');
+      modal.hide();
     });
 
     return modal;
@@ -155,29 +155,13 @@
     var modalClass = options.modalClass ? options.modalClass : settings.modalClass;
 
     var modalCloseContent = options.modalCloseContent ? options.modalCloseContent : settings.modalCloseContent;
-    var modalClose = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">'+modalCloseContent+'</button>'
+    var modalClose = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="background-color: white;">'+modalCloseContent+'</button>'
 
     var modalTitle = '<h5 id="'+id+'Label" class="modal-title"></h5> '
-    var modalHeader;
-
-    // Bootstrap 3 and 4 have different DOMs and different CSS. In B4, the
-    // modalHeader is display:flex and the modalClose uses negative margins,
-    // so it can stay after the modalTitle.
-    //
-    // In B3, the close button floats to the right, so it must stay before
-    // the modalTitle.
-    //
-    switch (bootstrapVersion) {
-    case 3:
-      modalHeader = modalClose + modalTitle;
-      break;
-    case 4:
-      modalHeader = modalTitle + modalClose;
-      break;
-    }
+    var modalHeader = modalTitle + modalClose;
 
     var modal = $(
-      '<div id="'+id+'" class="modal '+modalClass+' '+fade+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
+      '<div id="'+id+'" class="modal '+modalClass+' '+fade+' show" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
         '<div class="modal-dialog" role="document">' +
           '<div class="modal-content">' +
             '<div class="modal-header">' +
@@ -185,18 +169,18 @@
             '</div>' +
             '<div class="modal-body"></div>' +
             '<div class="modal-footer">' +
-              '<button class="btn cancel" data-dismiss="modal" aria-hidden="true"></button>' +
-              '<button class="btn commit"></button>' +
+              '<button class="btn cancel ms-auto" data-dismiss="modal" aria-hidden="true"></button>' +
+              '<button class="btn commit" type="submit"></button>' +
             '</div>'+
           '</div>'+
         '</div>'+
       '</div>'
     );
-
+    
     // Make sure it's always the top zindex
     var highest, current;
     highest = current = settings.zIndex;
-    $('.modal.in').not('#'+id).each(function() {
+    $('.modal.show').not('#'+id).each(function() {
       current = parseInt($(this).css('z-index'), 10);
       if(current > highest) {
         highest = current
@@ -244,12 +228,12 @@
       });
 
       modal.on('shown.bs.modal', function () {
-        verification.focus();
+        verification.trigger("focus");
       });
 
       modal.on('hidden.bs.modal', function () {
         verification.val('').trigger('keyup');
-        modals = $(".modal.in");
+        var modals = $(".modal.show");
         if(modals.length > 0 && !$("body").hasClass("modal-open")) {
           $('body').addClass('modal-open');
         }
@@ -277,15 +261,21 @@
 
     modal.on('hidden.bs.modal', function () {
       //Keep class if we are in a modal somewhere
-      modals = $(".modal.in");
+      var modals = $(".modal.show");
       if(modals.length > 0 && !$("body").hasClass("modal-open")) {
         $('body').addClass('modal-open');
       }
     });
 
+    modal.on('click', "button[data-dismiss='modal']", function(){
+      modal.hide();
+      $('.modal-backdrop').remove();
+    });
+
     $('body').append(modal);
 
     modal.spawn = function() {
+      modal.css('display', 'block');
       return modal.modal($.extend({}, {
         backdrop: options.backdrop,
         keyboard: options.keyboard,
@@ -301,7 +291,7 @@
    * Returns a modal already built for the given element or builds a new one,
    * caching it into the element's `confirm-modal` data attribute.
    */
-  $.fn.getConfirmModal = function () {
+  jQuery.fn.getConfirmModal = function () {
     var element = $(this), modal = element.data('confirm-modal');
 
     if (!modal) {
@@ -336,11 +326,11 @@
      */
     var window_confirm = window.confirm;
 
-    $(document).delegate(settings.elements.join(', '), 'confirm', function() {
+    $(document).on('confirm', settings.elements.join(', '), function() {
       var modal = $(this).getConfirmModal();
-
       if (!modal.is(':visible')) {
         modal.spawn();
+        modal.after('<div class="modal-backdrop fade in"></div>');
 
         // Cancel Rails' confirmation
         return false;
@@ -351,10 +341,10 @@
           return true;
         }
 
-        modal.one('hidden.bs.modal', function() {
+        modal.on('hidden.bs.modal', function() {
           // Reset it after modal is closed.
           window.confirm = window_confirm;
-          modals = $(".modal.in");
+          var modals = $(".modal.show");
           if(modals.length > 0 && !$("body").hasClass("modal-open")) {
             $('body').addClass('modal-open');
           }
@@ -366,4 +356,4 @@
     });
   }
 
-})(jQuery);
+});
