@@ -269,7 +269,10 @@ jQuery(function() {
 
     modal.on('click', "button[data-dismiss='modal']", function(){
       modal.hide();
-      $('.modal-backdrop').remove();
+      var modals = $(".modal.show");
+      if(modals.length > 0 && !$("body").hasClass("modal-open")) {
+        $('.modal-backdrop').last().remove();
+      }
     });
 
     $('body').append(modal);
@@ -330,7 +333,10 @@ jQuery(function() {
       var modal = $(this).getConfirmModal();
       if (!modal.is(':visible')) {
         modal.spawn();
-        modal.after('<div class="modal-backdrop fade in"></div>');
+        var modalBackdrop = $(".modal-backdrop");
+        if(modalBackdrop.length <= 0) {
+          modal.after('<div class="modal-backdrop fade show"></div>');
+        }
 
         // Cancel Rails' confirmation
         return false;
