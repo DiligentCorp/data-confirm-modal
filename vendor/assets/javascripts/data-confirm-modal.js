@@ -76,14 +76,13 @@ jQuery(function() {
         if (options.onConfirm && options.onConfirm.call)
           options.onConfirm.call();
 
-        modal.hide();
+        modal.modal('hide');
       });
 
       modal.find('.cancel').on('click', function () {
         if (options.onCancel && options.onCancel.call)
           options.onCancel.call();
-
-        modal.hide();
+          modal.modal('hide');
       });
     }
   };
@@ -143,7 +142,7 @@ jQuery(function() {
       // Call the original event handler chain
       element.get(0).click();
 
-      modal.hide();
+      modal.modal('hide');
     });
 
     return modal;
@@ -268,7 +267,7 @@ jQuery(function() {
     });
 
     modal.on('click', "button[data-dismiss='modal']", function(){
-      modal.hide();
+      modal.modal('hide');
       var modals = $(".modal.show");
       if(modals.length > 0 && !$("body").hasClass("modal-open")) {
         $('.modal-backdrop').last().remove();
@@ -278,7 +277,7 @@ jQuery(function() {
     $('body').append(modal);
 
     modal.spawn = function() {
-      modal.css('display', 'block');
+      modal.modal('show');
       return modal.modal($.extend({}, {
         backdrop: options.backdrop,
         keyboard: options.keyboard,
