@@ -1,0 +1,15 @@
+#This file was automatically generated during migration from the central repository
+#Relevant documentation for this file can be found here: https://github.com/DiligentCorp/platform-ownership/blob/main/docs/ForUsers/serviceFileTemplateFull.yaml
+entityTag: "data-confirm-modal"
+primaryParentEntityTag: "boardeffect"
+groupTags:
+  - "dilType:component"
+github:
+  organization: "DiligentCorp"
+  repository: "be-search-micro"
+jira:
+  projects:
+    - name: "MDOI"
+name: "BE Search"
+owner: "rd-team-boardeffect"
+dateVerified: "2025-04-29"
