@@ -6,10 +6,10 @@ groupTags:
   - "dilType:component"
 github:
   organization: "DiligentCorp"
-  repository: "be-search-micro"
+  repository: "data-confirm-modal"
 jira:
   projects:
     - name: "MDOI"
-name: "BE Search"
+name: "data-confirm-modal"
 owner: "rd-team-boardeffect"
 dateVerified: "2025-04-29"
